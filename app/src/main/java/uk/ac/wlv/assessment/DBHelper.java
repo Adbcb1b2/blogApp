@@ -5,28 +5,57 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class DBHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "userdata.db";
+
+    // User table constants
     private static final String TABLE_NAME = "userdata";
     private static final String COL_1 = "ID";
     private static final String COL_2 = "USERNAME";
     private static final String COL_3 = "PASSWORD";
 
+    // Messages table constants
+    private static final String BLOG_TABLE_NAME = "usermsgs";
+    private static final String COL_MSG_1 = "ID";
+    private static final String COL_MSG_2 = "USER_UD";
+    private static final String COL_MSG_3 = "TITLE";
+    private static final String COL_MSG_4 = "MESSAGE";
+    private static final String COL_MSG_5 = "IMAGE";
+
     public DBHelper(Context context) {
-        super(context, DATABASE_NAME, null, 1);
+        super(context, DATABASE_NAME, null, 2);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        // Create userdata table
         db.execSQL("CREATE TABLE " + TABLE_NAME + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, USERNAME TEXT UNIQUE, PASSWORD TEXT)");
+
+        // Create usermsgs table
+        db.execSQL("CREATE TABLE " + BLOG_TABLE_NAME + " (" +
+                COL_MSG_1 + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COL_MSG_2 + " INTEGER, " +
+                COL_MSG_3 + " TEXT, " +
+                COL_MSG_4 + " TEXT, " +
+                COL_MSG_5 + " TEXT, " +
+                "FOREIGN KEY(" + COL_MSG_2 + ") REFERENCES " + TABLE_NAME + "(ID))");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
-        onCreate(db);
+        if (oldVersion < 2) {
+            db.execSQL("CREATE TABLE " + BLOG_TABLE_NAME + " (" +
+                    COL_MSG_1 + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    COL_MSG_2 + " INTEGER, " +
+                    COL_MSG_3 + " TEXT, " +
+                    COL_MSG_4 + " TEXT, " +
+                    COL_MSG_5 + " TEXT, " +
+                    "FOREIGN KEY(" + COL_MSG_2 + ") REFERENCES " + TABLE_NAME + "(ID))");
+        }
+        Log.d("DBHelper", "Created table " + BLOG_TABLE_NAME);
     }
 
     public boolean insertData(String username, String password) {

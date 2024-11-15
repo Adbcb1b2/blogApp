@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Title TextView -->
+    <TextView
+        android:id="@+id/tvTitleNewMsg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="New Message"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginTop="8dp"
+        android:textColor="#000000"/>
+
+    <!-- Message Title -->
+    <EditText
+        android:layout_marginTop="32dp"
+        android:id="@+id/etTitleAdd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Message Title"
+        android:inputType="textCapWords"
+        android:minHeight="48dp"
+        android:padding="10dp"
+        android:textSize="16dp" />
+
+    <!-- Message Content -->
+    <EditText
+        android:id="@+id/etMessageAdd"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:hint="Enter Message Content"
+        android:inputType="textMultiLine"
+        android:gravity="top"
+        android:padding="10dp"
+        android:textSize="16sp"
+        android:scrollbars="vertical" />
+
+    <!-- Floating Action Button to Add Photo (Centered on the X-axis) -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnPhotoAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/ic_add_photo" />
+
+    <!-- Preview of Selected Photo -->
+    <ImageView
+        android:id="@+id/ivPhotoPrevAdd"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginTop="16dp"
+        android:visibility="visible"
+        android:src="@drawable/image_placeholder"
+        android:scaleType="centerCrop"/>
+
+    <!-- Save Button -->
+    <Button
+        android:id="@+id/btnSaveMsgAdd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Save"
+        android:layout_marginTop="32dp"
+        android:padding="12dp"
+        android:textSize="16sp"
+        android:backgroundTint="#6200EE" />
+
+</LinearLayout>
