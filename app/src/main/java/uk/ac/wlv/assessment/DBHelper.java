@@ -82,4 +82,16 @@ public class DBHelper extends SQLiteOpenHelper {
         }
 
     }
+
+    public int getUserID(String username, String password){
+        SQLiteDatabase db = this.getReadableDatabase();
+        int userID = -1; // To store returned userID, -1 will be returned if fails.
+
+        try (Cursor cursor = db.rawQuery("SELECT ID FROM " + TABLE_NAME + " WHERE USERNAME = ? AND PASSWORD = ?", new String[]{username, password})){
+            if (cursor.moveToFirst()) {
+                userID = cursor.getInt(0);
+            }
+        }
+        return userID;
+    }
 }

@@ -2,6 +2,7 @@ package uk.ac.wlv.assessment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -74,10 +75,17 @@ public class Login extends AppCompatActivity {
                 if (username.isEmpty() || password.isEmpty()) {
                     Toast.makeText(Login.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
                 } else if(dbHelper.checkPassword(username, password)){ // Check password and username match
+                    // Get the user ID
+                    int userID = dbHelper.getUserID(username, password);
+                    Log.d("LoginActivity", "User ID: " + userID); // TEST
+
                     Toast.makeText(Login.this, "Login Successful", Toast.LENGTH_SHORT).show();
+
                     // Launch the activity
                     Intent blogListActivity = new Intent(Login.this, BlogList.class);
+                    blogListActivity.putExtra("USER_ID", userID); // Add userID to intent
                     startActivity(blogListActivity);
+
                 }else{
                     // Alert user of incorrect details
                     Toast.makeText(Login.this, "Incorrect details. Please try again.", Toast.LENGTH_SHORT).show();
