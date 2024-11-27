@@ -100,12 +100,22 @@ public class DBHelper extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
 
         // Add values to the ContentValues
-        contentValues.put(COL_MSG_2, userId);  // User ID
-        contentValues.put(COL_MSG_3, title);   // Title
-        contentValues.put(COL_MSG_4, message); // Message
-        contentValues.put(COL_MSG_5, imagePath); // Image Path (may be null)
+        contentValues.put(COL_MSG_2, userId);
+        contentValues.put(COL_MSG_3, title);
+        contentValues.put(COL_MSG_4, message);
+        contentValues.put(COL_MSG_5, imagePath);
 
         long result = db.insert(BLOG_TABLE_NAME, null, contentValues);
         return result != -1; // Returns false if insert failed
     }
+
+    public Cursor getMessagesByUserId(int userId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // Query to get the message ID, title, message, and image where USER_UD matches the given userId
+        return db.rawQuery("SELECT " + COL_MSG_1 + ", " + COL_MSG_3 + ", " + COL_MSG_4 + ", " + COL_MSG_5 +
+                " FROM " + BLOG_TABLE_NAME +
+                " WHERE " + COL_MSG_2 + " = ?", new String[]{String.valueOf(userId)});
+    }
+
 }
