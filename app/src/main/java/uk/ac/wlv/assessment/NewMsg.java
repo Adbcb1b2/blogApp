@@ -27,6 +27,7 @@ public class NewMsg extends AppCompatActivity {
     EditText etMessage;
     ImageView imageViewPhoto;
     Button btnSaveMessage;
+    Button btnBackAdd;
     DBHelper dbHelper;
 
     private static final int REQUEST_IMAGE_GALLERY = 1;
@@ -43,6 +44,7 @@ public class NewMsg extends AppCompatActivity {
         btnPhotoAddCamera = findViewById(R.id.btnPhotoAddCamera);
         btnPhotoAddGallery = findViewById(R.id.btnPhotoAddGallery);
         btnSaveMessage = findViewById(R.id.btnSaveMsgAdd);
+        btnBackAdd = findViewById(R.id.btnBackAdd);
         etTitle = findViewById(R.id.etTitleAdd);
         etMessage = findViewById(R.id.etMessageAdd);
 
@@ -78,7 +80,7 @@ public class NewMsg extends AppCompatActivity {
         btnSaveMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(NewMsg.this, "Save button clicked", Toast.LENGTH_SHORT).show(); // TEST
+                //Toast.makeText(NewMsg.this, "Save button clicked", Toast.LENGTH_SHORT).show(); // TEST
 
                 // Get entered title and message
                 String title = etTitle.getText().toString();
@@ -92,6 +94,18 @@ public class NewMsg extends AppCompatActivity {
                 }
             }
         });
+
+        // Back button click listener
+        btnBackAdd.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View view) {
+                Intent blogListActivity = new Intent(NewMsg.this, BlogList.class);
+                blogListActivity.putExtra("USER_ID", userID); // Add userID to intent
+                startActivity(blogListActivity);
+            }
+        });
+
 
     }
 

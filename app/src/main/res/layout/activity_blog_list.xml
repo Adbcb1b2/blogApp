@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".BlogList">
 
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/messagesView"
         android:layout_width="409dp"

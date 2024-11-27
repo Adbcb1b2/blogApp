@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="New Message"
-        android:textSize="24sp"
+        android:textSize="20sp"
         android:textStyle="bold"
         android:gravity="center"
         android:layout_marginTop="8dp"
@@ -20,26 +20,26 @@
 
     <!-- Message Title -->
     <EditText
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="36dp"
         android:id="@+id/etTitleAdd"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Enter Message Title"
         android:inputType="textCapWords"
         android:minHeight="48dp"
-        android:padding="10dp"
-        android:textSize="16dp" />
+        android:padding="8dp"
+        android:textSize="14sp" />
 
     <!-- Message Content -->
     <EditText
         android:id="@+id/etMessageAdd"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="150dp"
         android:hint="Enter Message Content"
         android:inputType="textMultiLine"
         android:gravity="top"
-        android:padding="10dp"
-        android:textSize="16sp"
+        android:padding="8dp"
+        android:textSize="14sp"
         android:scrollbars="vertical" />
 
     <!-- Horizontal LinearLayout for Floating Action Buttons -->
@@ -64,14 +64,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_add_photo_gallery" />
-
     </LinearLayout>
 
     <!-- Preview of Selected Photo -->
     <ImageView
         android:id="@+id/ivPhotoPrevAdd"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="150dp"
         android:layout_marginTop="16dp"
         android:visibility="visible"
         android:src="@drawable/image_placeholder"
@@ -83,9 +82,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Save"
-        android:layout_marginTop="32dp"
-        android:padding="12dp"
-        android:textSize="16sp"
+        android:layout_marginTop="36dp"
+        android:padding="10dp"
+        android:textSize="14sp"
         android:backgroundTint="#6200EE" />
+
+    <!-- Back Button -->
+    <Button
+        android:id="@+id/btnBackAdd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Back"
+        android:layout_marginTop="16dp"
+        android:padding="10dp"
+        android:textSize="14sp"
+        android:backgroundTint="#48494B" />
 
 </LinearLayout>

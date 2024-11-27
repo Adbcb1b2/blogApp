@@ -19,16 +19,17 @@
         android:layout_marginTop="64dp"
         >
 
-    <!-- Logo ImageView inside CardView -->
-    <ImageView
-        android:id="@+id/logoImageView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/logo"
-        android:scaleType="centerInside" /> <!-- Ensures the logo is centered within the CardView -->
+        <!-- Logo ImageView inside CardView -->
+        <ImageView
+            android:id="@+id/logoImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/logo"
+            android:scaleType="centerInside" /> <!-- Ensures the logo is centered within the CardView -->
 
-</androidx.cardview.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
+    <!-- Username EditText -->
     <EditText
         android:id="@+id/etUsername"
         android:layout_width="0dp"
@@ -43,6 +44,7 @@
         app:layout_constraintTop_toBottomOf="@+id/cardView"
         />
 
+    <!-- Password EditText -->
     <EditText
         android:id="@+id/etPassword"
         android:layout_width="0dp"
@@ -57,29 +59,34 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etUsername" />
 
-    <Button
-        android:id="@+id/btnRegister"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Register"
-        app:layout_constraintTop_toBottomOf="@+id/etPassword"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginEnd="32dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="24dp"/>
-
+    <!-- Login Button -->
     <Button
         android:id="@+id/btnLogin"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Log in"
-        app:layout_constraintTop_toBottomOf="@+id/btnRegister"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        app:layout_constraintTop_toBottomOf="@+id/etPassword"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginEnd="32dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="24dp"/>
+        android:backgroundTint="#6200EE"
+        android:textColor="#FFFFFF" />
 
+    <!-- Register Button  -->
+    <Button
+        android:id="@+id/btnRegister"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Register"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        app:layout_constraintTop_toBottomOf="@+id/btnLogin"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:backgroundTint="#48494B"
+        android:textColor="#FFFFFF" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
