@@ -27,21 +27,28 @@ public class NewMsg extends AppCompatActivity {
     EditText etMessage;
     ImageView imageViewPhoto;
     Button btnSaveMessage;
+    DBHelper dbHelper;
 
     private static final int REQUEST_IMAGE_GALLERY = 1;
+    private String imagePath = null; // To store image
+    private int userID = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_msg);
+        dbHelper = new DBHelper(this);
 
         imageViewPhoto = findViewById(R.id.ivPhotoPrevAdd);
         btnPhotoAddCamera = findViewById(R.id.btnPhotoAddCamera);
         btnPhotoAddGallery = findViewById(R.id.btnPhotoAddGallery);
+        btnSaveMessage = findViewById(R.id.btnSaveMsgAdd);
+        etTitle = findViewById(R.id.etTitleAdd);
+        etMessage = findViewById(R.id.etMessageAdd);
 
 
         // Get userID from the intent
-        int userID = getIntent().getIntExtra("USER_ID", -1);
+        userID = getIntent().getIntExtra("USER_ID", -1);
         Log.d("NewMsgActivity", "User ID: " + userID); //TEST
 
         // Gallery button click listener
@@ -67,13 +74,24 @@ public class NewMsg extends AppCompatActivity {
 
 
 
-        /* Save button click listener
+        //Save button click listener
         btnSaveMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Logic
+                Toast.makeText(NewMsg.this, "Save button clicked", Toast.LENGTH_SHORT).show(); // TEST
+
+                // Get entered title and message
+                String title = etTitle.getText().toString();
+                String message = etMessage.getText().toString();
+
+                if (title.isEmpty() || message.isEmpty()) {
+                    Toast.makeText(NewMsg.this, "Please fill in both title and message.", Toast.LENGTH_SHORT).show();
+                }else{
+                    dbHelper.insertMessage(userID, title, message, imagePath);
+                    Toast.makeText(NewMsg.this, "Message inserted into DB", Toast.LENGTH_SHORT).show();
+                }
             }
-        });*/
+        });
 
     }
 
@@ -98,7 +116,7 @@ public class NewMsg extends AppCompatActivity {
                 imageViewPhoto.setImageBitmap(selectedImage);
 
                 // Save the image path as a string for database insertion
-                String imagePath = selectedImageUri.toString();
+                imagePath = selectedImageUri.toString();
                 Log.d("NewMsgActivity", "Image Path: " + imagePath); // TEST
 
             } catch (Exception e) {
