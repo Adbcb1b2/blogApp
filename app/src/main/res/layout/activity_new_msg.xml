@@ -42,14 +42,30 @@
         android:textSize="16sp"
         android:scrollbars="vertical" />
 
-    <!-- Floating Action Button to Add Photo (Centered on the X-axis) -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/btnPhotoAdd"
-        android:layout_width="wrap_content"
+    <!-- Horizontal LinearLayout for Floating Action Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="16dp"
-        android:src="@drawable/ic_add_photo" />
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="16dp">
+
+        <!-- Floating Action Button for Camera -->
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnPhotoAddCamera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/ic_add_photo_camera" />
+
+        <!-- Floating Action Button for Gallery -->
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnPhotoAddGallery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_add_photo_gallery" />
+
+    </LinearLayout>
 
     <!-- Preview of Selected Photo -->
     <ImageView
