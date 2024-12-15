@@ -1,8 +1,10 @@
 package uk.ac.wlv.assessment;
 
 
+import android.Manifest;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -16,6 +18,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -36,6 +40,8 @@ public class NewMsg extends AppCompatActivity {
     private String imagePath = null; // To store the local image path
     private int userID = -1;
     static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static final int CAMERA_REQUEST = 1888;
+
 
 
     @Override
@@ -56,6 +62,14 @@ public class NewMsg extends AppCompatActivity {
         // Get userID from the intent
         userID = getIntent().getIntExtra("USER_ID", -1);
 
+        // Request camera permission if not granted
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CAMERA},
+                    CAMERA_REQUEST);
+        }
+
         // Gallery button click listener
         btnPhotoAddGallery.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,13 +84,7 @@ public class NewMsg extends AppCompatActivity {
         btnPhotoAddCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(NewMsg.this, "Camera button clicked", Toast.LENGTH_SHORT).show();
-                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                try {
-                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-                } catch (ActivityNotFoundException e) {
-                    Toast.makeText(NewMsg.this, "Camera failed", Toast.LENGTH_SHORT).show();
-                }
+                openCamera();
             }
         });
 
@@ -87,6 +95,7 @@ public class NewMsg extends AppCompatActivity {
                 String title = etTitle.getText().toString();
                 String message = etMessage.getText().toString();
 
+                // Check if both a title and message has been entered, or wont be saved
                 if (title.isEmpty() || message.isEmpty()) {
                     Toast.makeText(NewMsg.this, "Please fill in both title and message.", Toast.LENGTH_SHORT).show();
                 } else {
@@ -130,6 +139,14 @@ public class NewMsg extends AppCompatActivity {
                 Toast.makeText(this, "Failed to load image.", Toast.LENGTH_SHORT).show();
             }
         }
+        if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
+            // Display the captured photo in ImageView
+            Bundle extras = data.getExtras();
+            if (extras != null) {
+                imageViewPhoto.setImageBitmap((android.graphics.Bitmap) extras.get("data"));
+            }
+        }
+
     }
 
     private String saveImageToInternalStorage(Bitmap bitmap) {
@@ -143,6 +160,28 @@ public class NewMsg extends AppCompatActivity {
         } catch (Exception e) {
             Log.e("SaveImage", "Error saving image: " + e.getMessage());
             return null;
+        }
+    }
+
+    // Method to open camera and capture a photo
+    private void openCamera() {
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(cameraIntent, CAMERA_REQUEST);
+    }
+
+    // Handle the permission request results
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == CAMERA_REQUEST) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted for camera, proceed with camera action
+                Toast.makeText(this, "Camera permission granted!", Toast.LENGTH_SHORT).show();
+            } else {
+                // Permission denied for camera
+                Toast.makeText(this, "Camera permission denied", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }
