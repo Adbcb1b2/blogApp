@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    >
+
+    <!-- Title TextView -->
+    <TextView
+        android:id="@+id/tvTitleViewMsg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="View/Edit Message"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginTop="8dp"
+        android:textColor="#000000"/>
+
+    <!-- Message Title -->
+    <EditText
+        android:layout_marginTop="36dp"
+        android:id="@+id/etTitleViewMsg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Message Title"
+        android:inputType="textCapWords"
+        android:minHeight="48dp"
+        android:padding="8dp"
+        android:textSize="14sp" />
+
+    <!-- Message Content -->
+    <EditText
+        android:id="@+id/etMessageViewMsg"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:hint="Enter Message Content"
+        android:inputType="textMultiLine"
+        android:gravity="top"
+        android:padding="8dp"
+        android:textSize="14sp"
+        android:scrollbars="vertical" />
+
+    <!-- Horizontal LinearLayout for Floating Action Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="16dp">
+
+        <!-- Floating Action Button for Camera -->
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnPhotoViewCamera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/ic_add_photo_camera" />
+
+        <!-- Floating Action Button for Gallery -->
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnPhotoViewGallery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_add_photo_gallery" />
+    </LinearLayout>
+
+    <!-- Preview of Selected Photo -->
+    <ImageView
+        android:id="@+id/ivPhotoPrevViewMsg"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginTop="16dp"
+        android:visibility="visible"
+        android:src="@drawable/image_placeholder"
+        android:scaleType="centerCrop"/>
+
+    <!-- Update Button -->
+    <Button
+        android:id="@+id/btnSaveMsgViewMsg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Update"
+        android:layout_marginTop="36dp"
+        android:padding="10dp"
+        android:textSize="14sp"
+        android:backgroundTint="#6200EE" />
+
+
+
+</LinearLayout>

@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -58,10 +59,18 @@ public class BlogList extends AppCompatActivity {
 
         storeDataInArrays();
 
-        customAdapter = new CustomAdapter(BlogList.this,message_id, message_title, message, image_path);
+        customAdapter = new CustomAdapter(BlogList.this,this,message_id, message_title, message, image_path);
         recyclerView.setAdapter(customAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(BlogList.this));
 
+    }
+    // Refresh the acitivty so that changes to messages a
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1){
+            recreate(); // Refreshes activity
+        }
     }
 
     void storeDataInArrays(){
