@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.Toast;
 
 public class DBHelper extends SQLiteOpenHelper {
 
@@ -117,5 +118,27 @@ public class DBHelper extends SQLiteOpenHelper {
                 " FROM " + BLOG_TABLE_NAME +
                 " WHERE " + COL_MSG_2 + " = ?", new String[]{String.valueOf(userId)});
     }
+
+    public boolean updateMessage(String row_id, String title, String message){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL_MSG_3, title);
+        contentValues.put(COL_MSG_4, message);
+
+        long result = db.update(BLOG_TABLE_NAME, contentValues, "ID=?", new String[]{row_id});
+        if(result == -1){
+            Log.d("ViewMessage", "Failed to update DB");
+        }
+        return result != -1; // Returns false if insert fails
+    }
+
+    public Cursor searchMessages(int userId, String query) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selection = "user_id = ? AND (message_title LIKE ? OR message LIKE ?)";
+        String[] selectionArgs = { String.valueOf(userId), "%" + query + "%", "%" + query + "%" };
+        return db.query("messages", null, selection, selectionArgs, null, null, null);
+    }
+
+
 
 }
