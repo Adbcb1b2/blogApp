@@ -132,6 +132,13 @@ public class DBHelper extends SQLiteOpenHelper {
         return result != -1; // Returns false if insert fails
     }
 
+    public Cursor searchMessages(int userId, String query) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selection = "user_id = ? AND (message_title LIKE ? OR message LIKE ?)";
+        String[] selectionArgs = { String.valueOf(userId), "%" + query + "%", "%" + query + "%" };
+        return db.query("messages", null, selection, selectionArgs, null, null, null);
+    }
+
 
 
 }

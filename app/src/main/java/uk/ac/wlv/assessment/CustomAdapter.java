@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,10 +20,9 @@ import java.util.ArrayList;
 public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHolder> {
     Activity activity;
     private Context context;
-    private ArrayList message_id, message_title, message, image_path;
-    int position;
+    private ArrayList<String> message_id, message_title, message, image_path;
 
-    CustomAdapter(Activity activity, Context context, ArrayList message_id, ArrayList message_title, ArrayList message, ArrayList image_path) {
+    CustomAdapter(Activity activity, Context context, ArrayList<String> message_id, ArrayList<String> message_title, ArrayList<String> message, ArrayList<String> image_path) {
         this.activity = activity;
         this.context = context;
         this.message_id = message_id;
@@ -41,33 +39,14 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
         return new MyViewHolder(view);
     }
 
-
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        // Set text and other data
-        holder.message_id_txt.setText(String.valueOf(message_id.get(position)));
-        holder.message_title_txt.setText(String.valueOf(message_title.get(position)));
-        holder.message_txt.setText(String.valueOf(message.get(position)));
+        holder.message_id_txt.setText(message_id.get(position));
+        holder.message_title_txt.setText(message_title.get(position));
+        holder.message_txt.setText(message.get(position));
 
-        // Open individual message when clicked
-        holder.mainLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int currentPosition = holder.getAdapterPosition(); // Use getAdapterPosition() instead of position
-                if (currentPosition != RecyclerView.NO_POSITION) {
-                    Intent intent = new Intent(context, ViewMsg.class);
-                    intent.putExtra("id", String.valueOf(message_id.get(currentPosition)));
-                    intent.putExtra("title", String.valueOf(message_title.get(currentPosition)));
-                    intent.putExtra("message", String.valueOf(message.get(currentPosition)));
-                    intent.putExtra("imagePath", String.valueOf(image_path.get(currentPosition))); // Pass image path
-                    activity.startActivityForResult(intent, 1);
-                }
-            }
-        });
-
-        String imagePath = (String) image_path.get(position);
+        String imagePath = image_path.get(position);
         if (imagePath != null && !imagePath.isEmpty()) {
-            // Load image from the local file path
             Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
             if (bitmap != null) {
                 holder.message_thumbnail.setImageBitmap(bitmap);
@@ -77,11 +56,34 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
         } else {
             holder.message_thumbnail.setImageResource(R.drawable.image_placeholder);
         }
+
+        holder.mainLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int currentPosition = holder.getAdapterPosition();
+                if (currentPosition != RecyclerView.NO_POSITION) {
+                    Intent intent = new Intent(context, ViewMsg.class);
+                    intent.putExtra("id", message_id.get(currentPosition));
+                    intent.putExtra("title", message_title.get(currentPosition));
+                    intent.putExtra("message", message.get(currentPosition));
+                    intent.putExtra("imagePath", image_path.get(currentPosition));
+                    activity.startActivityForResult(intent, 1);
+                }
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
         return message_id.size();
+    }
+
+    // Update data method to refresh the RecyclerView based on the search results
+    public void updateData(ArrayList<String> filteredMessageId, ArrayList<String> filteredMessageTitle, ArrayList<String> filteredMessage, ArrayList<String> filteredImagePath) {
+        this.message_id = filteredMessageId;
+        this.message_title = filteredMessageTitle;
+        this.message = filteredMessage;
+        this.image_path = filteredImagePath;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -99,3 +101,4 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
         }
     }
 }
+

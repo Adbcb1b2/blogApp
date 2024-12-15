@@ -1,6 +1,5 @@
 package uk.ac.wlv.assessment;
 
-
 import android.Manifest;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -41,8 +40,6 @@ public class NewMsg extends AppCompatActivity {
     private int userID = -1;
     static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int CAMERA_REQUEST = 1888;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,8 +96,17 @@ public class NewMsg extends AppCompatActivity {
                 if (title.isEmpty() || message.isEmpty()) {
                     Toast.makeText(NewMsg.this, "Please fill in both title and message.", Toast.LENGTH_SHORT).show();
                 } else {
-                    dbHelper.insertMessage(userID, title, message, imagePath);
-                    Toast.makeText(NewMsg.this, "Message saved!", Toast.LENGTH_SHORT).show();
+                    // Insert the message along with the image path
+                    if (imagePath != null) {
+                        boolean isSaved = dbHelper.insertMessage(userID, title, message, imagePath);
+                        if (isSaved) {
+                            Toast.makeText(NewMsg.this, "Message saved!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(NewMsg.this, "Failed to save message.", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(NewMsg.this, "Please add an image first.", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -139,14 +145,19 @@ public class NewMsg extends AppCompatActivity {
                 Toast.makeText(this, "Failed to load image.", Toast.LENGTH_SHORT).show();
             }
         }
+
         if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
             // Display the captured photo in ImageView
             Bundle extras = data.getExtras();
             if (extras != null) {
-                imageViewPhoto.setImageBitmap((android.graphics.Bitmap) extras.get("data"));
+                Bitmap photo = (Bitmap) extras.get("data");
+                imageViewPhoto.setImageBitmap(photo);
+
+                // Save the camera photo locally and store the path
+                imagePath = saveImageToInternalStorage(photo);
+                Log.d("NewMsgActivity", "Saved Image Path: " + imagePath);
             }
         }
-
     }
 
     private String saveImageToInternalStorage(Bitmap bitmap) {
