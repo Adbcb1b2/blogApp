@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.util.List;
+
 public class DBHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "userdata.db";
@@ -137,6 +139,23 @@ public class DBHelper extends SQLiteOpenHelper {
         String selection = "user_id = ? AND (message_title LIKE ? OR message LIKE ?)";
         String[] selectionArgs = { String.valueOf(userId), "%" + query + "%", "%" + query + "%" };
         return db.query("messages", null, selection, selectionArgs, null, null, null);
+    }
+
+    // Method to delete multiple messages by IDs
+    public void deleteMessagesByIds(List<String> ids) {
+        if (ids == null || ids.isEmpty()) return;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        String args = new String(new char[ids.size()]).replace("\0", "?,").replaceAll(",$", ""); // Create placeholders like "?, ?, ?"
+        String whereClause = COL_MSG_1 + " IN (" + args + ")";
+
+        try {
+            db.delete(BLOG_TABLE_NAME, whereClause, ids.toArray(new String[0]));
+        } catch (Exception e) {
+            Log.e("DBHelper", "Error deleting messages: " + e.getMessage());
+        } finally {
+            db.close();
+        }
     }
 
 
