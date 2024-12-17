@@ -53,7 +53,8 @@ public class BlogList extends AppCompatActivity {
             startActivity(newMsgActivity);
         });
 
-        btnDeleteSelected.setOnClickListener(v -> deleteSelectedMessages());
+
+        btnDeleteSelected.setOnClickListener(view -> deleteSelectedMessages());
 
         dbHelper = new DBHelper(this);
         message_id = new ArrayList<>();
