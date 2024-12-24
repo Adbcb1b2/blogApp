@@ -125,7 +125,6 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
     }
 
     // Method to update the adapter's data
-// Method to update the adapter's data
     public void updateData(ArrayList<String> newMessageId, ArrayList<String> newMessageTitle, ArrayList<String> newMessage, ArrayList<String> newImagePath) {
         this.message_id = newMessageId;
         this.message_title = newMessageTitle;
