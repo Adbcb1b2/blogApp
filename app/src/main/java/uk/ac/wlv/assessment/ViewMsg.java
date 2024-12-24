@@ -14,6 +14,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.File;
+
 public class ViewMsg extends AppCompatActivity {
     EditText title_input, message_input;
     Button update_button, share_button;
@@ -56,7 +58,7 @@ public class ViewMsg extends AppCompatActivity {
 
                 // Create the email intent
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                shareIntent.setType("message/rfc822"); // Set type to email
+                shareIntent.setType("text/plain"); // Set type to email
 
                 // Add the subject and body text to the intent
                 shareIntent.putExtra(Intent.EXTRA_SUBJECT, subjectText);
@@ -64,8 +66,13 @@ public class ViewMsg extends AppCompatActivity {
 
                 // Check if the imagePath is valid and add the image to the email
                 if (imagePath != null && !imagePath.isEmpty()) {
-                    Uri imageUri = Uri.parse("file://" + imagePath);
-                    shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
+                    File imageFile = new File(imagePath);
+                    if (imageFile.exists()) {
+                        Uri imageUri = Uri.fromFile(imageFile); // Get the URI of the image file
+                        shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri); // Attach image
+                    }
+                }else{
+                    Toast.makeText(ViewMsg.this, "Unable to add image", Toast.LENGTH_SHORT).show();
                 }
 
                 // Start the intent chooser
@@ -108,4 +115,3 @@ public class ViewMsg extends AppCompatActivity {
         }
     }
 }
-
