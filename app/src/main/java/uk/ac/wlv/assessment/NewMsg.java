@@ -85,14 +85,13 @@ public class NewMsg extends AppCompatActivity {
             }
         });
 
-        // Save button click listener
         btnSaveMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String title = etTitle.getText().toString();
                 String message = etMessage.getText().toString();
 
-                // Check if both a title and message has been entered, or wont be saved
+                // Check if both a title and message have been entered, or it won't be saved
                 if (title.isEmpty() || message.isEmpty()) {
                     Toast.makeText(NewMsg.this, "Please fill in both title and message.", Toast.LENGTH_SHORT).show();
                 } else {
@@ -101,6 +100,12 @@ public class NewMsg extends AppCompatActivity {
                         boolean isSaved = dbHelper.insertMessage(userID, title, message, imagePath);
                         if (isSaved) {
                             Toast.makeText(NewMsg.this, "Message saved!", Toast.LENGTH_SHORT).show();
+
+                            // After saving the message, return to the BlogList activity
+                            Intent blogListActivity = new Intent(NewMsg.this, BlogList.class);
+                            blogListActivity.putExtra("USER_ID", userID); // Pass userID if needed
+                            startActivity(blogListActivity);
+                            finish();
                         } else {
                             Toast.makeText(NewMsg.this, "Failed to save message.", Toast.LENGTH_SHORT).show();
                         }

@@ -14,6 +14,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.io.File;
 
 public class ViewMsg extends AppCompatActivity {
@@ -22,6 +24,8 @@ public class ViewMsg extends AppCompatActivity {
     String id, title, message, imagePath;
     ImageView imageView;
     DBHelper dbHelper;
+    FloatingActionButton btnPhotoViewCamera;
+    FloatingActionButton btnPhotoViewGallery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
