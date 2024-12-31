@@ -121,17 +121,24 @@ public class DBHelper extends SQLiteOpenHelper {
                 " WHERE " + COL_MSG_2 + " = ?", new String[]{String.valueOf(userId)});
     }
 
-    public boolean updateMessage(String row_id, String title, String message){
+    public boolean updateMessage(String row_id, String title, String message, String imagePath) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COL_MSG_3, title);
-        contentValues.put(COL_MSG_4, message);
 
+        // Add the title, message, and imagePath to the contentValues
+        contentValues.put(COL_MSG_3, title);     // Assuming COL_MSG_3 is the column for the title
+        contentValues.put(COL_MSG_4, message);   // Assuming COL_MSG_4 is the column for the message
+        contentValues.put(COL_MSG_5, imagePath); // Assuming COL_MSG_5 is the column for the image path
+
+        // Update the table row where ID matches the given row_id
         long result = db.update(BLOG_TABLE_NAME, contentValues, "ID=?", new String[]{row_id});
-        if(result == -1){
+
+        if (result == -1) {
             Log.d("ViewMessage", "Failed to update DB");
         }
-        return result != -1; // Returns false if insert fails
+
+        // Return true if the update was successful, otherwise false
+        return result != -1;
     }
 
     public Cursor searchMessages(int userId, String query) {
