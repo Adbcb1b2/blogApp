@@ -51,15 +51,16 @@ public class ViewMsg extends AppCompatActivity {
 
         dbHelper = new DBHelper(this);
 
-        getAndSetIntentData();
+        getAndSetIntentData(); // Retrieve data passed by the intent
 
         // Handle gallery button click
         btnPhotoViewGallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Open gallery to pick an image
                 Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                galleryIntent.setType("image/*");
-                startActivityForResult(galleryIntent, REQUEST_IMAGE_GALLERY);
+                galleryIntent.setType("image/*"); // Set type to image
+                startActivityForResult(galleryIntent, REQUEST_IMAGE_GALLERY); // Start gallery intent
             }
         });
 
@@ -67,12 +68,14 @@ public class ViewMsg extends AppCompatActivity {
         btnPhotoViewCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Check if permission for camera is granted
                 if (ContextCompat.checkSelfPermission(ViewMsg.this, Manifest.permission.CAMERA)
                         != PackageManager.PERMISSION_GRANTED) {
+                    // Request permission if not granted
                     ActivityCompat.requestPermissions(ViewMsg.this,
                             new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST);
                 } else {
-                    openCamera();
+                    openCamera(); // Open if permission granted
                 }
             }
         });
@@ -81,6 +84,7 @@ public class ViewMsg extends AppCompatActivity {
         update_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Attempt to update the message
                 boolean result = dbHelper.updateMessage(id, title_input.getText().toString(), message_input.getText().toString(), imagePath);
                 if (result) {
                     Toast.makeText(ViewMsg.this, "Message Updated", Toast.LENGTH_SHORT).show();
@@ -94,14 +98,17 @@ public class ViewMsg extends AppCompatActivity {
         share_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Get data to be shared
                 String messageText = message_input.getText().toString();
                 String subjectText = title_input.getText().toString();
 
+                // Create share intent
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
                 shareIntent.setType("text/plain");
                 shareIntent.putExtra(Intent.EXTRA_SUBJECT, subjectText);
                 shareIntent.putExtra(Intent.EXTRA_TEXT, messageText);
 
+                // Include image path if available
                 if (imagePath != null && !imagePath.isEmpty()) {
                     File imageFile = new File(imagePath);
                     if (imageFile.exists()) {
@@ -109,9 +116,9 @@ public class ViewMsg extends AppCompatActivity {
                         shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
                     }
                 }
-
+                // Try to open share chooser
                 try {
-                    startActivity(Intent.createChooser(shareIntent, "Choose an email client"));
+                    startActivity(Intent.createChooser(shareIntent, "Choose an email app"));
                 } catch (android.content.ActivityNotFoundException ex) {
                     Toast.makeText(ViewMsg.this, "No email app installed", Toast.LENGTH_SHORT).show();
                 }
@@ -121,62 +128,69 @@ public class ViewMsg extends AppCompatActivity {
 
     private void openCamera() {
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(cameraIntent, CAMERA_REQUEST);
+        startActivityForResult(cameraIntent, CAMERA_REQUEST); // start camera intent
     }
 
+    // Save captured image to internal storage
     private String saveImageToInternalStorage(Bitmap bitmap) {
         try {
-            File directory = getApplicationContext().getFilesDir();
-            File file = new File(directory, "image_" + System.currentTimeMillis() + ".png");
+            File directory = getApplicationContext().getFilesDir(); // Get the apps internal storage directory
+            File file = new File(directory, "image_" + System.currentTimeMillis() + ".png"); // Create a new image file
             FileOutputStream fos = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos); // Save as PNG
             fos.close();
-            return file.getAbsolutePath();
+            return file.getAbsolutePath(); // return file path
         } catch (Exception e) {
             Log.e("SaveImage", "Error saving image: " + e.getMessage());
-            return null;
+            return null; // If an error occurs, return null
         }
     }
 
+    // Handle results from other activities (gallery/camera)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        // Gallery result
         if (requestCode == REQUEST_IMAGE_GALLERY && resultCode == RESULT_OK && data != null) {
-            Uri selectedImageUri = data.getData();
+            Uri selectedImageUri = data.getData(); // Get uri
             try {
                 InputStream imageStream = getContentResolver().openInputStream(selectedImageUri);
-                Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                imageView.setImageBitmap(selectedImage);
-                imagePath = saveImageToInternalStorage(selectedImage);
+                Bitmap selectedImage = BitmapFactory.decodeStream(imageStream); // Decode to Bitmap
+                imageView.setImageBitmap(selectedImage); // Set the image in imageView
+                imagePath = saveImageToInternalStorage(selectedImage); // Save the image path
             } catch (Exception e) {
                 Toast.makeText(this, "Failed to load image.", Toast.LENGTH_SHORT).show();
             }
         }
 
+        // Camera result
         if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK && data != null) {
             Bundle extras = data.getExtras();
-            Bitmap photo = (Bitmap) extras.get("data");
-            imageView.setImageBitmap(photo);
-            imagePath = saveImageToInternalStorage(photo);
+            Bitmap photo = (Bitmap) extras.get("data"); // Get captured photo
+            imageView.setImageBitmap(photo); // Set to imageView
+            imagePath = saveImageToInternalStorage(photo); // Save to external storage
         }
     }
 
     void getAndSetIntentData() {
         if (getIntent().hasExtra("id") && getIntent().hasExtra("title") && getIntent().hasExtra("message")) {
+            // Get the data from the intent
             id = getIntent().getStringExtra("id");
             title = getIntent().getStringExtra("title");
             message = getIntent().getStringExtra("message");
             imagePath = getIntent().getStringExtra("imagePath");
 
+            // Set the retrieved data into input fields
             title_input.setText(title);
             message_input.setText(message);
 
+            // If image path is available, display the image
             if (imagePath != null && !imagePath.isEmpty()) {
                 Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
                 imageView.setImageBitmap(bitmap != null ? bitmap : BitmapFactory.decodeResource(getResources(), R.drawable.image_placeholder));
             } else {
-                imageView.setImageResource(R.drawable.image_placeholder);
+                imageView.setImageResource(R.drawable.image_placeholder); // Set default to placeholder
             }
         } else {
             Toast.makeText(this, "No data", Toast.LENGTH_SHORT).show();

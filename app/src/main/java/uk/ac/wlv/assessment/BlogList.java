@@ -19,14 +19,15 @@ import java.util.HashSet;
 
 public class BlogList extends AppCompatActivity {
 
+    // User Interface components
     RecyclerView recyclerView;
     FloatingActionButton btnNewMsg, btnDeleteSelected, btnShare;
     SearchView searchView;
 
-    DBHelper dbHelper;
-    ArrayList<String> message_id, message_title, message, image_path;
+    DBHelper dbHelper; // For database operations
+    ArrayList<String> message_id, message_title, message, image_path; // To hold message data
     CustomAdapter customAdapter;
-    int userID;
+    int userID; // To store userID passed from login activity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +50,7 @@ public class BlogList extends AppCompatActivity {
         btnNewMsg.setOnClickListener(view -> {
             Intent newMsgActivity = new Intent(BlogList.this, NewMsg.class); // Source activtiy, destination activity
             newMsgActivity.putExtra("USER_ID", userID); // Pass the userID to new activity
-            startActivity(newMsgActivity);
+            startActivity(newMsgActivity); // Launch activity
         });
 
         // When delete button has been pressed, call delete function
@@ -89,17 +90,20 @@ public class BlogList extends AppCompatActivity {
             }
         });
 
-
+        // Initialise database
         dbHelper = new DBHelper(this);
+
+        // Load data into arrays
         message_id = new ArrayList<>();
         message_title = new ArrayList<>();
         message = new ArrayList<>();
         image_path = new ArrayList<>();
-
         storeDataInArrays();
 
+        // Set up the recycler view
         customAdapter = new CustomAdapter(BlogList.this, this, message_id, message_title, message, image_path);
-        // Set up the share button visibility
+
+        // Set up the share and delete button visibility, depending on whether messages are selected
         customAdapter.setOnSelectionChangeListener(hasSelection -> {
             if (hasSelection) {
                 btnShare.setVisibility(View.VISIBLE);  // Show FAB when messages are selected
@@ -113,6 +117,7 @@ public class BlogList extends AppCompatActivity {
         recyclerView.setAdapter(customAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(BlogList.this));
 
+        /// Set up searchView listener
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -121,7 +126,7 @@ public class BlogList extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                filterMessages(newText);
+                filterMessages(newText); // Filter messages depending on search criteria as it is entered
                 return true;
             }
         });
@@ -131,10 +136,11 @@ public class BlogList extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
-            recreate();
+            recreate(); // Refresh activity
         }
     }
 
+    // Function to load data into arrays
     void storeDataInArrays() {
         Cursor cursor = dbHelper.getMessagesByUserId(userID);
         if (cursor.getCount() == 0) {
@@ -149,6 +155,7 @@ public class BlogList extends AppCompatActivity {
         }
     }
 
+    // Function to filter messages depending on search criteria
     private void filterMessages(String query) {
         ArrayList<String> filteredMessageId = new ArrayList<>();
         ArrayList<String> filteredMessageTitle = new ArrayList<>();
@@ -157,9 +164,12 @@ public class BlogList extends AppCompatActivity {
 
         String lowerCaseQuery = query.trim().toLowerCase(); // Trim and lowercase the query
         for (int i = 0; i < message_title.size(); i++) {
+            // Convert current message and title to lowercase
             String title = message_title.get(i).toLowerCase();
             String content = message.get(i).toLowerCase();
+            // If the query is contained in either the title or content of the current message
             if (title.contains(lowerCaseQuery) || content.contains(lowerCaseQuery)) {
+                // Add messages to the filtered lists
                 filteredMessageId.add(message_id.get(i));
                 filteredMessageTitle.add(message_title.get(i));
                 filteredMessage.add(message.get(i));
@@ -171,10 +181,11 @@ public class BlogList extends AppCompatActivity {
         customAdapter.updateData(filteredMessageId, filteredMessageTitle, filteredMessage, filteredImagePath);
     }
 
+    // Function to delete selected messages from the database
     private void deleteSelectedMessages() {
         HashSet<String> selectedMessages = customAdapter.getSelectedMessages();
         if (!selectedMessages.isEmpty()) {
-            dbHelper.deleteMessagesByIds(new ArrayList<>(selectedMessages));
+            dbHelper.deleteMessagesByIds(new ArrayList<>(selectedMessages)); // Delete message from the database
             Toast.makeText(this, "Messages deleted", Toast.LENGTH_SHORT).show();
             recreate(); // Refresh the activity to reload the updated list
         } else {

@@ -28,10 +28,13 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String COL_MSG_4 = "MESSAGE";
     private static final String COL_MSG_5 = "IMAGE";
 
+    // Constructor
     public DBHelper(Context context) {
+        // Pass DB name and version
         super(context, DATABASE_NAME, null, 2);
     }
 
+    // Method called when the database is created for the first time
     @Override
     public void onCreate(SQLiteDatabase db) {
         // Create userdata table
@@ -47,8 +50,10 @@ public class DBHelper extends SQLiteOpenHelper {
                 "FOREIGN KEY(" + COL_MSG_2 + ") REFERENCES " + TABLE_NAME + "(ID))");
     }
 
+    // Method called when the database version is upgraded e.g. table added
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        // If the version is less than 2, create Blog Table
         if (oldVersion < 2) {
             db.execSQL("CREATE TABLE " + BLOG_TABLE_NAME + " (" +
                     COL_MSG_1 + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -61,43 +66,48 @@ public class DBHelper extends SQLiteOpenHelper {
         Log.d("DBHelper", "Created table " + BLOG_TABLE_NAME);
     }
 
+    // Method to insert new user into the userdata table
     public boolean insertData(String username, String password) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = this.getWritableDatabase(); // Get db instance (writable)
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COL_2, username);
-        contentValues.put(COL_3, password);
+        contentValues.put(COL_2, username); // Insert username
+        contentValues.put(COL_3, password); // Insert password
 
         long result = db.insert(TABLE_NAME, null, contentValues);
         return result != -1; // returns false if insert fails (e.g., user already exists)
     }
 
+    // Method to check if the username and password match a record in the userdata table
     public boolean checkUserExists(String username) {
         SQLiteDatabase db = this.getReadableDatabase();
         try (Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE USERNAME=?", new String[]{username})) {
-            return cursor.getCount() > 0;
+            return cursor.getCount() > 0; // Return True if user exists
         }
     }
 
+    // Method to check if the username and password match a record in the user table
     public boolean checkPassword(String username, String password) {
         SQLiteDatabase db = this.getReadableDatabase();
         try (Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE USERNAME=? AND PASSWORD=?", new String[]{username, password})) {
-            return cursor.getCount() > 0;
+            return cursor.getCount() > 0; // Return True if username and password match
         }
 
     }
 
+    // Method to get the user ID for a given username and password
     public int getUserID(String username, String password){
         SQLiteDatabase db = this.getReadableDatabase();
         int userID = -1; // To store returned userID, -1 will be returned if fails.
 
         try (Cursor cursor = db.rawQuery("SELECT ID FROM " + TABLE_NAME + " WHERE USERNAME = ? AND PASSWORD = ?", new String[]{username, password})){
             if (cursor.moveToFirst()) {
-                userID = cursor.getInt(0);
+                userID = cursor.getInt(0); // Extract the userID from the cursor
             }
         }
-        return userID;
+        return userID; // Return userID or -1 if the user is not found
     }
 
+    // Method to insert a new message for a given user
     public boolean insertMessage(int userId, String title, String message, String imagePath) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -108,10 +118,11 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(COL_MSG_4, message);
         contentValues.put(COL_MSG_5, imagePath);
 
-        long result = db.insert(BLOG_TABLE_NAME, null, contentValues);
+        long result = db.insert(BLOG_TABLE_NAME, null, contentValues); // Insert the message
         return result != -1; // Returns false if insert failed
     }
 
+    // Method to get all messages for a specified user by their user ID
     public Cursor getMessagesByUserId(int userId) {
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -121,18 +132,20 @@ public class DBHelper extends SQLiteOpenHelper {
                 " WHERE " + COL_MSG_2 + " = ?", new String[]{String.valueOf(userId)});
     }
 
+    // Method to update a message, used in ViewMsg activity
     public boolean updateMessage(String row_id, String title, String message, String imagePath) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
         // Add the title, message, and imagePath to the contentValues
-        contentValues.put(COL_MSG_3, title);     // Assuming COL_MSG_3 is the column for the title
-        contentValues.put(COL_MSG_4, message);   // Assuming COL_MSG_4 is the column for the message
-        contentValues.put(COL_MSG_5, imagePath); // Assuming COL_MSG_5 is the column for the image path
+        contentValues.put(COL_MSG_3, title);
+        contentValues.put(COL_MSG_4, message);
+        contentValues.put(COL_MSG_5, imagePath);
 
         // Update the table row where ID matches the given row_id
         long result = db.update(BLOG_TABLE_NAME, contentValues, "ID=?", new String[]{row_id});
 
+        // Send message to log if fails
         if (result == -1) {
             Log.d("ViewMessage", "Failed to update DB");
         }
@@ -141,6 +154,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return result != -1;
     }
 
+    // Method to search for messages based on a query
     public Cursor searchMessages(int userId, String query) {
         SQLiteDatabase db = this.getReadableDatabase();
         String selection = "user_id = ? AND (message_title LIKE ? OR message LIKE ?)";
@@ -157,7 +171,7 @@ public class DBHelper extends SQLiteOpenHelper {
         String whereClause = COL_MSG_1 + " IN (" + args + ")";
 
         try {
-            db.delete(BLOG_TABLE_NAME, whereClause, ids.toArray(new String[0]));
+            db.delete(BLOG_TABLE_NAME, whereClause, ids.toArray(new String[0])); // Delete the messages with the given IDs
         } catch (Exception e) {
             Log.e("DBHelper", "Error deleting messages: " + e.getMessage());
         } finally {
