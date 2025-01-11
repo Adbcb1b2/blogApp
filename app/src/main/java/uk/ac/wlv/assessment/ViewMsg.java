@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -23,6 +24,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
 public class ViewMsg extends AppCompatActivity {
@@ -103,25 +105,34 @@ public class ViewMsg extends AppCompatActivity {
                 String subjectText = title_input.getText().toString();
 
                 // Create share intent
+
+
+                // Get the image from the imageView
+                Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+
+                // Storing the bitmap in a file
+                // Storing the bitmap in a file
+                File imageFile = new File(getExternalCacheDir(), "blog_post.png");
+                try {
+                    FileOutputStream out = new FileOutputStream(imageFile);
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+                    out.flush();
+                    out.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), "Failed to save image for sharing", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+
+                // Creating the email intent
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                shareIntent.setType("text/plain");
+                shareIntent.setType("message/rfc822");
                 shareIntent.putExtra(Intent.EXTRA_SUBJECT, subjectText);
                 shareIntent.putExtra(Intent.EXTRA_TEXT, messageText);
+                shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(imageFile));
 
-                // Include image path if available
-                if (imagePath != null && !imagePath.isEmpty()) {
-                    File imageFile = new File(imagePath);
-                    if (imageFile.exists()) {
-                        Uri imageUri = Uri.fromFile(imageFile);
-                        shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
-                    }
-                }
-                // Try to open share chooser
-                try {
-                    startActivity(Intent.createChooser(shareIntent, "Choose an email app"));
-                } catch (android.content.ActivityNotFoundException ex) {
-                    Toast.makeText(ViewMsg.this, "No email app installed", Toast.LENGTH_SHORT).show();
-                }
+                startActivity(Intent.createChooser(shareIntent, "Share Blog via Email"));
             }
         });
     }

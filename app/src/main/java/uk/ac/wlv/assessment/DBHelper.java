@@ -179,6 +179,26 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
+    // Method to get image path from database
+    public String getImagePathByMessageId(int messageId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String imagePath = null;
+
+        // Query to fetch the image path for the given message ID
+        Cursor cursor = db.rawQuery(
+                "SELECT " + COL_MSG_5 + " FROM " + BLOG_TABLE_NAME + " WHERE " + COL_MSG_1 + " = ?",
+                new String[]{String.valueOf(messageId)}
+        );
+
+        if (cursor.moveToFirst()) {
+            imagePath = cursor.getString(0); // Get the image path
+        }
+
+        cursor.close();
+        db.close();
+        return imagePath;
+    }
+
 
 
 }
