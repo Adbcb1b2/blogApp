@@ -85,6 +85,7 @@ public class NewMsg extends AppCompatActivity {
             }
         });
 
+        // Click listener to save the new message
         btnSaveMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

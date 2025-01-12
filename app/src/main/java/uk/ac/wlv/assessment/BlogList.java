@@ -61,7 +61,7 @@ public class BlogList extends AppCompatActivity {
             HashSet<String> selectedMessages = customAdapter.getSelectedMessages();
 
             if (!selectedMessages.isEmpty()) {
-                StringBuilder shareContent = new StringBuilder();
+                StringBuilder shareContent = new StringBuilder();   
 
                 // Loop through the selected messages by their IDs
                 for (String messageId : selectedMessages) {

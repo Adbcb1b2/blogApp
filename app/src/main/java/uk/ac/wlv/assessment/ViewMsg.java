@@ -90,6 +90,7 @@ public class ViewMsg extends AppCompatActivity {
                 boolean result = dbHelper.updateMessage(id, title_input.getText().toString(), message_input.getText().toString(), imagePath);
                 if (result) {
                     Toast.makeText(ViewMsg.this, "Message Updated", Toast.LENGTH_SHORT).show();
+                    finish(); // Return to Bloglist
                 } else {
                     Toast.makeText(ViewMsg.this, "Update Failed", Toast.LENGTH_SHORT).show();
                 }
@@ -100,18 +101,17 @@ public class ViewMsg extends AppCompatActivity {
         share_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 // Get data to be shared
                 String messageText = message_input.getText().toString();
                 String subjectText = title_input.getText().toString();
-
-                // Create share intent
 
 
                 // Get the image from the imageView
                 Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
 
                 // Storing the bitmap in a file
-                // Storing the bitmap in a file
+
                 File imageFile = new File(getExternalCacheDir(), "blog_post.png");
                 try {
                     FileOutputStream out = new FileOutputStream(imageFile);
@@ -123,7 +123,6 @@ public class ViewMsg extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Failed to save image for sharing", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
 
                 // Creating the email intent
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);

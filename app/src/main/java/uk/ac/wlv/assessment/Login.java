@@ -47,12 +47,16 @@ public class Login extends AppCompatActivity {
                     if (dbHelper.checkUserExists(username)) {
                         // Notify user the username is taken
                         Toast.makeText(Login.this, "User Already Exists", Toast.LENGTH_SHORT).show();
+                        etUsername.setText("");
+                        etPassword.setText("");
                     } else {
                         // If username isn't take, insert data
                         boolean isInserted = dbHelper.insertData(username, password);
                         if (isInserted) {
                             // Insert successful - User registered
                             Toast.makeText(Login.this, "User successfully registered", Toast.LENGTH_SHORT).show();
+                            etUsername.setText("");
+                            etPassword.setText("");
                         } else {
                             // Insert unsuccessful - User not registered
                             Toast.makeText(Login.this, "Registration failed", Toast.LENGTH_SHORT).show();
@@ -89,6 +93,9 @@ public class Login extends AppCompatActivity {
                 }else{
                     // Alert user of incorrect details
                     Toast.makeText(Login.this, "Incorrect details. Please try again.", Toast.LENGTH_SHORT).show();
+                    etUsername.setText("");
+                    etPassword.setText("");
+
                 }
 
             }
